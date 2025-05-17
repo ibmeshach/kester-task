@@ -1,0 +1,2 @@
+pub const ANCHOR_DISCRIMINATOR_SIZE: usize = 8;
+pub const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
