@@ -1,8 +1,9 @@
 import { truncateAddress, isValidSolanaAddress } from "@/utils/helper";
 import { Raffle } from "@/utils/interfaces";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { getNFTAsset } from "@/services/raffle";
+import { toast } from "react-hot-toast";
 
 interface Props {
   raffle: Raffle;
@@ -32,8 +33,8 @@ const RaffleDetails: React.FC<Props> = ({ raffle }) => {
     }
   };
 
-  const fetchNFTData = async (mintAddress: string) => {
-    if (!mintAddress) {
+  const fetchNFTData = useCallback(async () => {
+    if (!raffle.nftMint) {
       setNftData(null);
       setNftImage(null);
       return;
@@ -41,24 +42,25 @@ const RaffleDetails: React.FC<Props> = ({ raffle }) => {
 
     try {
       setIsNFTPending(true);
-      const asset = await getNFTAsset(mintAddress);
+      const asset = await getNFTAsset(raffle.nftMint);
       setNftData(asset);
 
-      if (asset.content?.json_uri) {
-        await fetchNFTMetadata(asset.content.json_uri);
+      if (asset?.content?.files?.[0]?.uri) {
+        setNftImage(asset.content.files[0].uri);
       }
     } catch (error) {
-      console.error("Error fetching NFT:", error);
+      console.error("Error fetching NFT data:", error);
+      toast.error("Failed to fetch NFT data");
       setNftData(null);
       setNftImage(null);
     } finally {
       setIsNFTPending(false);
     }
-  };
+  }, [raffle.nftMint]);
 
   useEffect(() => {
-    fetchNFTData(raffle.nftMint);
-  }, [raffle.nftMint]);
+    fetchNFTData();
+  }, [fetchNFTData]);
 
   return (
     <div className="md:col-span-2 bg-white p-4 sm:p-6 rounded-lg shadow-md">

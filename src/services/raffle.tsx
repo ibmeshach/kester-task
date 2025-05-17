@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
   AnchorProvider,
   BN,
@@ -332,6 +330,8 @@ export const pickWinner = async (program: Program<Raffle>, pda: string) => {
 
     // Parse the transaction logs to extract program events
     const events = eventParser.parseLogs(txInfo.meta.logMessages);
+
+    console.log("Events:", events);
 
     // Find the WinnerSelected event
     const winnerSelectedEvent = events.find(

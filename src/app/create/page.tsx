@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getNFTAsset, getProvider, initializeRaffle } from "@/services/raffle";
@@ -51,8 +51,8 @@ export default function Page() {
     }
   };
 
-  const fetchNFTData = async (mintAddress: string) => {
-    if (!mintAddress) {
+  const fetchNFTData = useCallback(async (mint: string) => {
+    if (!mint) {
       setNftData(null);
       setNftImage(null);
       return;
@@ -60,7 +60,7 @@ export default function Page() {
 
     try {
       setIsNFTPending(true);
-      const asset = await getNFTAsset(mintAddress);
+      const asset = await getNFTAsset(mint);
       setNftData(asset);
 
       if (asset.content?.json_uri) {
@@ -73,7 +73,7 @@ export default function Page() {
     } finally {
       setIsNFTPending(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (debouncedNFTMint) {
@@ -82,7 +82,7 @@ export default function Page() {
       setNftData(null);
       setNftImage(null);
     }
-  }, [debouncedNFTMint]);
+  }, [debouncedNFTMint, fetchNFTData]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

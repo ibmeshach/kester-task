@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import RaffleDetails from "@/components/RaffleDetails";
 import RaffleEnter from "@/components/RaffleEnter";
@@ -13,22 +13,27 @@ import {
   getProviderReadonly,
 } from "@/services/raffle";
 import { Raffle } from "@/utils/interfaces";
+import { toast } from "react-hot-toast";
 
 export default function RafflePage() {
   const { cid } = useParams();
   const [raffle, setRaffle] = useState<Raffle | null>(null);
   const program = useMemo(() => getProviderReadonly(), []);
 
-  const refreshRaffle = async () => {
-    if (cid) {
+  const refreshRaffle = useCallback(async () => {
+    if (!program || !cid) return;
+    try {
       const updatedRaffle = await fetchRaffle(program, cid as string);
       setRaffle(updatedRaffle);
+    } catch (error) {
+      console.error("Error fetching raffle:", error);
+      toast.error("Failed to fetch raffle data");
     }
-  };
+  }, [program, cid]);
 
   useEffect(() => {
     refreshRaffle();
-  }, [program, cid]);
+  }, [refreshRaffle]);
 
   if (!raffle) return <h4>Raffle not found</h4>;
 
