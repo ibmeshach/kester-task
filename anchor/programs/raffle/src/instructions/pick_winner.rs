@@ -26,6 +26,11 @@ pub fn pick_winner(ctx: Context<PickWinnerCtx>, cid: u64) -> Result<()> {
         return Err(ErrorCode::NotEnoughEntries.into());
     }
 
+    // Only allow picking a winner if the NFT has not been claimed yet
+    if raffle.winner != Pubkey::default() {
+        return Err(ErrorCode::WinnerAlreadyClaimed.into());
+    }
+
     let current_time = Clock::get()?.unix_timestamp;
     if current_time < raffle.expiry_date {
         return Err(ErrorCode::RaffleNotExpired.into());

@@ -516,6 +516,11 @@
       "code": 6022,
       "name": "NoWinnerSelected",
       "msg": "No winner has been selected for this raffle"
+    },
+    {
+      "code": 6023,
+      "name": "WinnerAlreadyClaimed",
+      "msg": "Winner has already claimed the NFT"
     }
   ],
   "types": [

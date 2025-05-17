@@ -522,6 +522,11 @@ export type Raffle = {
       "code": 6022,
       "name": "noWinnerSelected",
       "msg": "No winner has been selected for this raffle"
+    },
+    {
+      "code": 6023,
+      "name": "winnerAlreadyClaimed",
+      "msg": "Winner has already claimed the NFT"
     }
   ],
   "types": [

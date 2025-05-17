@@ -48,4 +48,6 @@ pub enum ErrorCode {
     WinnerNotTheWinner,
     #[msg("No winner has been selected for this raffle")]
     NoWinnerSelected,
+    #[msg("Winner has already claimed the NFT")]
+    WinnerAlreadyClaimed,
 }
